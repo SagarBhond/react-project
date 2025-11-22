@@ -1,19 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
-export default function App() {
-  const [msg, setMsg] = useState('Loading...');
+function App() {
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('/api/hello')
-      .then(r => r.json())
-      .then(d => setMsg(d.message))
-      .catch(() => setMsg('Could not reach API'));
+    fetch("http://YOUR_PUBLIC_IP:3001/api/products")
+      .then(res => res.json())
+      .then(data => setProducts(data));
   }, []);
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', padding: 24 }}>
-      <h1>React + Express (Single Dockerfile)</h1>
-      <p>API says: <strong>{msg}</strong></p>
+    <div className="container">
+      <header className="header">
+        <h1>🛒 Amazon Clone</h1>
+        <input className="search" placeholder="Search for products..." />
+        <button className="cart-btn">Cart (0)</button>
+      </header>
+
+      <div className="product-grid">
+        {products.map(product => (
+          <div className="product-card" key={product.id}>
+            <img src={product.image} alt={product.name} className="product-img" />
+
+            <h3>{product.name}</h3>
+            <p className="price">₹{product.price}</p>
+
+            <div className="rating">
+              {"⭐".repeat(product.rating)}
+            </div>
+
+            <button className="btn">Add to Cart</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
+
+export default App;
+
